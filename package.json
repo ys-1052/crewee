@@ -1,0 +1,25 @@
+{
+  "name": "crewee",
+  "version": "1.0.0",
+  "description": "スポーツチームの代表者と選手をつなぐマッチングプラットフォーム",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && make dev",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && make build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "setup": "cd backend && make setup",
+    "prepare": "husky || true"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
