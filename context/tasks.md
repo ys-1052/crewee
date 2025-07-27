@@ -2,32 +2,32 @@
 
 ## フェーズ0: 開発環境準備
 
-- [ ] 0.1 プロジェクト初期化
-  - [ ] 0.1.1 Gitリポジトリの初期化とREADME作成
-  - [ ] 0.1.2 .gitignoreファイルとディレクトリ構造の作成
-  - [ ] 0.1.3 Docker Compose設定ファイル作成（開発用PostgreSQL）
+- [x] 0.1 プロジェクト初期化
+  - [x] 0.1.1 Gitリポジトリの初期化とREADME作成
+  - [x] 0.1.2 .gitignoreファイルとディレクトリ構造の作成
+  - [x] 0.1.3 Docker Compose設定ファイル作成（開発用PostgreSQL）
 
-- [ ] 0.2 バックエンド環境セットアップ
-  - [ ] 0.2.1 Go module初期化とプロジェクト構造作成
-  - [ ] 0.2.2 依存関係インストール（Echo、sqlc、golang-migrate等）
-  - [ ] 0.2.3 開発用Makefileとエアライブリロード設定
-  - [ ] 0.2.4 Go言語linter・formatter設定
+- [x] 0.2 バックエンド環境セットアップ
+  - [x] 0.2.1 Go module初期化とプロジェクト構造作成
+  - [x] 0.2.2 依存関係インストール（Echo、sqlc、golang-migrate等）
+  - [x] 0.2.3 開発用Makefileとエアライブリロード設定
+  - [x] 0.2.4 Go言語linter・formatter設定
     - golangci-lint設定ファイル作成 (.golangci.yml)
     - gofmt・goimports設定
     - pre-commit hooks設定
 
-- [ ] 0.3 フロントエンド環境セットアップ
-  - [ ] 0.3.1 Next.js 15.4プロジェクト作成とTypeScript設定
-  - [ ] 0.3.2 Tailwind CSS設定とReact Query導入
-  - [ ] 0.3.3 ESLint・Prettier・コード品質ツール設定
+- [x] 0.3 フロントエンド環境セットアップ
+  - [x] 0.3.1 Next.js 15.4プロジェクト作成とTypeScript設定
+  - [x] 0.3.2 Tailwind CSS設定とReact Query導入
+  - [x] 0.3.3 ESLint・Prettier・コード品質ツール設定
     - ESLint (@typescript-eslint, @next/eslint-config-next)
     - Prettier設定とエディタ統合
     - Husky + lint-staged設定（コミット前チェック）
 
-- [ ] 0.4 開発環境の動作確認
-  - [ ] 0.4.1 PostgreSQLコンテナ起動とデータベース接続確認
-  - [ ] 0.4.2 GoサーバーとNext.jsサーバーの動作確認
-  - [ ] 0.4.3 ホットリロードとプロキシ設定の確認
+- [x] 0.4 開発環境の動作確認
+  - [x] 0.4.1 PostgreSQLコンテナ起動とデータベース接続確認
+  - [x] 0.4.2 GoサーバーとNext.jsサーバーの動作確認
+  - [x] 0.4.3 ホットリロードとプロキシ設定の確認
 
 ## フェーズ1: データベース基盤構築
 
