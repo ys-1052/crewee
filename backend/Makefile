@@ -45,9 +45,21 @@ migrate-up: ## Run database migrations up
 	@echo "Running migrations up..."
 	migrate -path migrations -database "${DATABASE_URL}" up
 
-migrate-down: ## Run database migrations down
+migrate-down: ## Run database migrations down (all)
 	@echo "Running migrations down..."
 	migrate -path migrations -database "${DATABASE_URL}" down
+
+migrate-up-1: ## Run database migrations up by 1 step
+	@echo "Running migrations up by 1 step..."
+	migrate -path migrations -database "${DATABASE_URL}" up 1
+
+migrate-down-1: ## Run database migrations down by 1 step
+	@echo "Running migrations down by 1 step..."
+	migrate -path migrations -database "${DATABASE_URL}" down 1
+
+migrate-status: ## Show current migration status
+	@echo "Current migration status:"
+	migrate -path migrations -database "${DATABASE_URL}" version
 
 migrate-create: ## Create a new migration file (usage: make migrate-create NAME=migration_name)
 	@if [ -z "$(NAME)" ]; then \
