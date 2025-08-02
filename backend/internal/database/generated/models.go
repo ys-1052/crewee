@@ -228,6 +228,47 @@ func (ns NullSkillLevel) Value() (driver.Value, error) {
 	return string(ns.SkillLevel), nil
 }
 
+type Application struct {
+	ID              uuid.UUID         `json:"id"`
+	EventID         uuid.UUID         `json:"event_id"`
+	ApplicantUserID uuid.UUID         `json:"applicant_user_id"`
+	Message         sql.NullString    `json:"message"`
+	Status          ApplicationStatus `json:"status"`
+	CreatedAt       time.Time         `json:"created_at"`
+	UpdatedAt       time.Time         `json:"updated_at"`
+}
+
+type Event struct {
+	ID          uuid.UUID       `json:"id"`
+	TeamID      uuid.UUID       `json:"team_id"`
+	CreatedBy   uuid.UUID       `json:"created_by"`
+	SportID     uuid.UUID       `json:"sport_id"`
+	RegionCode  string          `json:"region_code"`
+	Title       string          `json:"title"`
+	StartAt     time.Time       `json:"start_at"`
+	DurationMin int32           `json:"duration_min"`
+	Level       SkillLevel      `json:"level"`
+	Capacity    int32           `json:"capacity"`
+	Fee         sql.NullString  `json:"fee"`
+	Note        sql.NullString  `json:"note"`
+	Status      EventStatus     `json:"status"`
+	Visibility  EventVisibility `json:"visibility"`
+	CreatedAt   time.Time       `json:"created_at"`
+	UpdatedAt   time.Time       `json:"updated_at"`
+}
+
+type EventComment struct {
+	ID              uuid.UUID     `json:"id"`
+	EventID         uuid.UUID     `json:"event_id"`
+	AuthorUserID    uuid.UUID     `json:"author_user_id"`
+	ParentCommentID uuid.NullUUID `json:"parent_comment_id"`
+	Body            string        `json:"body"`
+	IsPinned        bool          `json:"is_pinned"`
+	CreatedAt       time.Time     `json:"created_at"`
+	UpdatedAt       time.Time     `json:"updated_at"`
+	DeletedAt       sql.NullTime  `json:"deleted_at"`
+}
+
 type Region struct {
 	JisCode       string         `json:"jis_code"`
 	Name          string         `json:"name"`
@@ -245,6 +286,24 @@ type Sport struct {
 	IsActive  bool      `json:"is_active"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type Team struct {
+	ID          uuid.UUID `json:"id"`
+	OwnerUserID uuid.UUID `json:"owner_user_id"`
+	SportID     uuid.UUID `json:"sport_id"`
+	Name        string    `json:"name"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type TeamRegion struct {
+	ID         uuid.UUID      `json:"id"`
+	TeamID     uuid.UUID      `json:"team_id"`
+	RegionCode string         `json:"region_code"`
+	Note       sql.NullString `json:"note"`
+	CreatedAt  time.Time      `json:"created_at"`
+	UpdatedAt  time.Time      `json:"updated_at"`
 }
 
 type User struct {

@@ -3,16 +3,35 @@ package config
 import (
 	"os"
 	"strconv"
+	"time"
 )
 
 const (
 	DefaultRateLimitRequests = 1000
 	DefaultRateLimitWindow   = 3600
+	defaultMaxOpenConns      = 25
+	defaultMaxIdleConns      = 5
+	defaultConnMaxLifetime   = 300
 )
+
+type DatabaseConfig struct {
+	Host            string
+	Port            string
+	User            string
+	Password        string
+	Name            string
+	SSLMode         string
+	MaxOpenConns    int
+	MaxIdleConns    int
+	ConnMaxLifetime time.Duration
+}
 
 type Config struct {
 	// Slice types first (24 bytes on 64-bit)
 	AllowedOrigins []string
+
+	// Nested struct
+	Database DatabaseConfig
 
 	// String types (16 bytes each on 64-bit)
 	Port               string
@@ -39,6 +58,17 @@ type Config struct {
 
 func Load() (*Config, error) {
 	cfg := &Config{
+		Database: DatabaseConfig{
+			Host:            getEnv("DB_HOST", "localhost"),
+			Port:            getEnv("DB_PORT", "5432"),
+			User:            getEnv("DB_USER", "crewee"),
+			Password:        getEnv("DB_PASSWORD", "password"),
+			Name:            getEnv("DB_NAME", "crewee_dev"),
+			SSLMode:         getEnv("DB_SSL_MODE", "disable"),
+			MaxOpenConns:    getEnvInt("DB_MAX_OPEN_CONNS", defaultMaxOpenConns),
+			MaxIdleConns:    getEnvInt("DB_MAX_IDLE_CONNS", defaultMaxIdleConns),
+			ConnMaxLifetime: time.Duration(getEnvInt("DB_CONN_MAX_LIFETIME", defaultConnMaxLifetime)) * time.Second,
+		},
 		Port:               getEnv("PORT", "8080"),
 		Env:                getEnv("ENV", "development"),
 		DatabaseURL:        getEnv("DATABASE_URL", ""),

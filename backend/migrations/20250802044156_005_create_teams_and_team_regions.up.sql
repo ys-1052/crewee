@@ -16,7 +16,8 @@ CREATE TABLE team_regions (
   region_code VARCHAR(6) NOT NULL REFERENCES regions (region_code) ON DELETE CASCADE,
   note TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW() UNIQUE (team_id, region_code)
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (team_id, region_code)
 );
 
 
