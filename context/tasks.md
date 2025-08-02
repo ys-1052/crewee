@@ -31,15 +31,15 @@
 
 ## フェーズ1: データベース基盤構築
 
-- [ ] 1.1 マイグレーションシステム構築
-  - [ ] 1.1.1 golang-migrateとMakefileでのマイグレーション実行環境構築
-  - [ ] 1.1.2 ENUM型定義（event_status, application_status, skill_level等）
-  - [ ] 1.1.3 基本テーブル作成（users, sports, regions）
+- [x] 1.1 マイグレーションシステム構築
+  - [x] 1.1.1 golang-migrateとMakefileでのマイグレーション実行環境構築
+  - [x] 1.1.2 ENUM型定義（event_status, application_status, skill_level等）
+  - [x] 1.1.3 基本テーブル作成（users, sports, regions）
 
-- [ ] 1.2 マスタデータテーブル構築  
-  - [ ] 1.2.1 sportsテーブル作成とマスタデータ投入
-  - [ ] 1.2.2 regionsテーブル作成とJISコードマスタデータ投入
-  - [ ] 1.2.3 マスタデータ取得用SQL/sqlc設定作成
+- [x] 1.2 マスタデータテーブル構築
+  - [x] 1.2.1 sportsテーブル作成とマスタデータ投入
+  - [x] 1.2.2 regionsテーブル作成とJISコードマスタデータ投入
+  - [x] 1.2.3 マスタデータ取得用SQL/sqlc設定作成
 
 - [ ] 1.3 メインエンティティテーブル構築
   - [ ] 1.3.1 teams, team_regionsテーブル作成
