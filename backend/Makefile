@@ -1,4 +1,4 @@
-.PHONY: help dev build test clean fmt lint migrate-up migrate-down migrate-create docker-up docker-down
+.PHONY: help dev build test clean fmt lint migrate-up migrate-down migrate-create docker-up docker-down region-data-convert region-data-migrate python-fmt python-lint sql-fmt
 
 # Default target
 help: ## Show this help message
@@ -43,22 +43,47 @@ lint: ## Run linter
 # Database migrations
 migrate-up: ## Run database migrations up
 	@echo "Running migrations up..."
+	@if [ -z "${DATABASE_URL}" ]; then \
+		echo "Error: DATABASE_URL environment variable is not set."; \
+		echo "Please set DATABASE_URL (e.g., export DATABASE_URL=\"postgres://user:password@localhost:5432/crewee_dev\")"; \
+		exit 1; \
+	fi
 	migrate -path migrations -database "${DATABASE_URL}" up
 
 migrate-down: ## Run database migrations down (all)
 	@echo "Running migrations down..."
+	@if [ -z "${DATABASE_URL}" ]; then \
+		echo "Error: DATABASE_URL environment variable is not set."; \
+		echo "Please set DATABASE_URL (e.g., export DATABASE_URL=\"postgres://user:password@localhost:5432/crewee_dev\")"; \
+		exit 1; \
+	fi
 	migrate -path migrations -database "${DATABASE_URL}" down
 
 migrate-up-1: ## Run database migrations up by 1 step
 	@echo "Running migrations up by 1 step..."
+	@if [ -z "${DATABASE_URL}" ]; then \
+		echo "Error: DATABASE_URL environment variable is not set."; \
+		echo "Please set DATABASE_URL (e.g., export DATABASE_URL=\"postgres://user:password@localhost:5432/crewee_dev\")"; \
+		exit 1; \
+	fi
 	migrate -path migrations -database "${DATABASE_URL}" up 1
 
 migrate-down-1: ## Run database migrations down by 1 step
 	@echo "Running migrations down by 1 step..."
+	@if [ -z "${DATABASE_URL}" ]; then \
+		echo "Error: DATABASE_URL environment variable is not set."; \
+		echo "Please set DATABASE_URL (e.g., export DATABASE_URL=\"postgres://user:password@localhost:5432/crewee_dev\")"; \
+		exit 1; \
+	fi
 	migrate -path migrations -database "${DATABASE_URL}" down 1
 
 migrate-status: ## Show current migration status
 	@echo "Current migration status:"
+	@if [ -z "${DATABASE_URL}" ]; then \
+		echo "Error: DATABASE_URL environment variable is not set."; \
+		echo "Please set DATABASE_URL (e.g., export DATABASE_URL=\"postgres://user:password@localhost:5432/crewee_dev\")"; \
+		exit 1; \
+	fi
 	migrate -path migrations -database "${DATABASE_URL}" version
 
 migrate-create: ## Create a new migration file (usage: make migrate-create NAME=migration_name)
@@ -119,3 +144,74 @@ env: ## Copy .env.example to .env
 	else \
 		echo ".env file already exists"; \
 	fi
+
+# Region master data
+region-data-convert: ## Convert Excel file to CSV only
+	@echo "Converting local_government_codes.xlsx to CSV..."
+	@if [ ! -f "../local_government_codes.xlsx" ]; then \
+		echo "Error: local_government_codes.xlsx not found in project root"; \
+		exit 1; \
+	fi
+	@echo "Setting up Python environment..."
+	@if [ ! -d "../venv" ]; then \
+		python3 -m venv ../venv; \
+		source ../venv/bin/activate && pip install pandas openpyxl xlrd; \
+	fi
+	@echo "Converting Excel to CSV..."
+	@cd .. && source venv/bin/activate && python3 scripts/convert_lgcode_to_csv.py
+	@echo "CSV conversion complete!"
+
+region-data-migrate: ## Convert region data and generate migration SQL (handles both initial and incremental updates)
+	@echo "Converting local_government_codes.xlsx to CSV..."
+	@if [ ! -f "../local_government_codes.xlsx" ]; then \
+		echo "Error: local_government_codes.xlsx not found in project root"; \
+		exit 1; \
+	fi
+	@echo "Setting up Python environment..."
+	@if [ ! -d "../venv" ]; then \
+		python3 -m venv ../venv; \
+		source ../venv/bin/activate && pip install pandas openpyxl xlrd; \
+	fi
+	@echo "Converting Excel to CSV..."
+	@cd .. && source venv/bin/activate && python3 scripts/convert_lgcode_to_csv.py
+	@echo "Generating migration SQL (initial setup or incremental updates)..."
+	@cd .. && source venv/bin/activate && python3 scripts/generate_region_diff_migration.py
+	@echo "Cleaning up temporary CSV file..."
+	@rm -f sql/local_government_codes.csv
+	@if ls migrations/*update_regions_data.up.sql >/dev/null 2>&1; then \
+		echo "✓ Migration SQL files generated. Run 'make migrate-up' to apply changes."; \
+	else \
+		echo "No changes detected. Migration files not generated."; \
+	fi
+
+# Python code quality
+python-fmt: ## Format Python scripts
+	@echo "Formatting Python scripts..."
+	@if [ ! -d "../venv" ]; then \
+		echo "Python environment not found. Run region-data-convert first."; \
+		exit 1; \
+	fi
+	@cd .. && source venv/bin/activate && black scripts/ && isort scripts/
+	@echo "Python formatting complete!"
+
+python-lint: ## Lint Python scripts
+	@echo "Linting Python scripts..."
+	@if [ ! -d "../venv" ]; then \
+		echo "Python environment not found. Run region-data-convert first."; \
+		exit 1; \
+	fi
+	@cd .. && source venv/bin/activate && flake8 scripts/
+	@echo "Python linting complete!"
+
+# SQL formatting
+sql-fmt: ## Format SQL files using sql-formatter
+	@echo "Formatting SQL files..."
+	@if ! command -v sql-formatter >/dev/null 2>&1; then \
+		echo "Installing sql-formatter..."; \
+		npm install -g sql-formatter; \
+	fi
+	@echo "Formatting migration files..."
+	@find migrations -name "*.sql" -exec sql-formatter --config ../.sql-formatter.json --fix {} \;
+	@echo "Formatting query files..."
+	@find sql/queries -name "*.sql" -exec sql-formatter --config ../.sql-formatter.json --fix {} \; 2>/dev/null || true
+	@echo "SQL formatting complete!"
