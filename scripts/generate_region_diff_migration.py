@@ -67,8 +67,8 @@ def generate_diff_migration_sql():
             print("変更がありません。マイグレーションファイルは生成されませんでした。")
             return
 
-        # マイグレーションファイルのタイムスタンプ
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        # マイグレーションファイルのタイムスタンプ（UTC）
+        timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
 
         # マイグレーションファイルのパス
         migration_dir = Path("backend/migrations")
