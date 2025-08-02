@@ -7,6 +7,14 @@
 local_government_codes.xlsxファイルには、JISコード準拠の都道府県・市区町村データが含まれています。
 このシステムは**差分更新**に対応しており、変更されたデータのみを効率的に処理します。
 
+### データソース
+
+**地方公共団体コードファイル（Excel形式）**
+- **提供元**: 総務省
+- **ダウンロード先URL**: https://www.soumu.go.jp/denshijiti/code.html
+- **ファイル名**: 地方公共団体コード住所.xlsx → `local_government_codes.xlsx`にリネーム
+- **更新頻度**: 年1回程度（市町村合併等により更新）
+
 ### 処理方式
 
 **自動差分検出方式**: 初回は全データ投入、以降は変更されたデータのみをマイグレーション
@@ -24,7 +32,7 @@ local_government_codes.xlsxファイルには、JISコード準拠の都道府�
 
 ```
 crewee/
-├── local_government_codes.xlsx      # 元データ（総務省提供）
+├── local_government_codes.xlsx      # 元データ（総務省からダウンロード・リネーム）
 ├── scripts/
 │   ├── convert_lgcode_to_csv.py          # Excel→CSV変換スクリプト
 │   └── generate_region_diff_migration.py # マイグレーションSQL生成スクリプト（自動差分検出）
@@ -40,6 +48,8 @@ crewee/
 ## 使用方法
 
 ### 基本コマンド
+
+**前提条件**: 総務省から`local_government_codes.xlsx`をダウンロードしてプロジェクトルートに配置
 
 住所マスタの投入・更新（初回・継続共通）：
 
@@ -196,10 +206,19 @@ CREATE TABLE regions (
 
 地方公共団体コードが更新された場合：
 
-1. 新しいExcelファイルに置き換え
-2. `make region-data-convert` で再変換
-3. 新しいマイグレーションファイルが生成される
-4. データベースを更新する場合は事前にDOWNマイグレーションを実行
+### 新しいデータの取得
+1. **総務省サイトから最新ファイルをダウンロード**
+   - URL: https://www.soumu.go.jp/denshijiti/code.html
+   - 「地方公共団体コード住所.xlsx」をダウンロード
+2. **ファイル名を変更**
+   - `地方公共団体コード住所.xlsx` → `local_government_codes.xlsx`
+3. **プロジェクトルートに配置**
+   - 既存の`local_government_codes.xlsx`を上書き
+
+### マイグレーション実行
+1. `make region-data-migrate` で差分検出・マイグレーション生成
+2. 新しいマイグレーションファイルが生成される
+3. `make migrate-up` でデータベースに反映
 
 ## パフォーマンス
 
