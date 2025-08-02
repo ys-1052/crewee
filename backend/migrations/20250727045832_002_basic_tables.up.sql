@@ -24,13 +24,14 @@ CREATE TABLE sports (
 
 -- Regions master table (JIS code compliant)
 CREATE TABLE regions (
-  region_code VARCHAR(10) PRIMARY KEY, -- JIS code
+  jis_code VARCHAR(10) PRIMARY KEY, -- JIS code
   name VARCHAR(100) NOT NULL,
-  level region_level NOT NULL,
-  parent_code VARCHAR(10),
+  name_kana VARCHAR(200) NOT NULL,
+  region_type VARCHAR(20) NOT NULL,
+  parent_jis_code VARCHAR(10),
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
-  FOREIGN key (parent_code) REFERENCES regions (region_code)
+  FOREIGN key (parent_jis_code) REFERENCES regions (jis_code)
 );
 
 
@@ -47,15 +48,15 @@ CREATE INDEX idx_sports_code ON sports (code);
 CREATE INDEX idx_sports_active ON sports (is_active);
 
 
-CREATE INDEX idx_regions_level ON regions (level);
+CREATE INDEX idx_regions_type ON regions (region_type);
 
 
-CREATE INDEX idx_regions_parent ON regions (parent_code);
+CREATE INDEX idx_regions_parent ON regions (parent_jis_code);
 
 
 -- Foreign key constraints
 ALTER TABLE users
-ADD CONSTRAINT fk_users_home_region FOREIGN key (home_region_code) REFERENCES regions (region_code);
+ADD CONSTRAINT fk_users_home_region FOREIGN key (home_region_code) REFERENCES regions (jis_code);
 
 
 -- Function for auto-updating updated_at column
