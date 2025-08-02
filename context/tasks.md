@@ -41,10 +41,10 @@
   - [x] 1.2.2 regionsテーブル作成とJISコードマスタデータ投入
   - [x] 1.2.3 マスタデータ取得用SQL/sqlc設定作成
 
-- [ ] 1.3 メインエンティティテーブル構築
-  - [ ] 1.3.1 teams, team_regionsテーブル作成
-  - [ ] 1.3.2 eventsテーブル作成と検索用インデックス設定
-  - [ ] 1.3.3 applications, event_commentsテーブル作成
+- [x] 1.3 メインエンティティテーブル構築
+  - [x] 1.3.1 teams, team_regionsテーブル作成
+  - [x] 1.3.2 eventsテーブル作成と検索用インデックス設定
+  - [x] 1.3.3 applications, event_commentsテーブル作成
 
 ## フェーズ2: API基盤とマスタデータ取得
 

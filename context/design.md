@@ -183,7 +183,7 @@ type Event struct {
     DurationMin  int             `db:"duration_min"`
     Level        SkillLevel      `db:"level"`
     Capacity     int             `db:"capacity"`
-    FeeNote      string          `db:"fee_note"`
+    Fee          string          `db:"fee"`
     Note         string          `db:"note"`
     Status       EventStatus     `db:"status"`
     Visibility   EventVisibility `db:"visibility"`
@@ -217,9 +217,7 @@ type EventComment struct {
     AuthorUserID    string    `db:"author_user_id"`
     ParentCommentID *string   `db:"parent_comment_id"`
     Body            string    `db:"body"`
-    Scope           string    `db:"scope"`           // PUBLIC
     IsPinned        bool      `db:"is_pinned"`
-    IsSystemMessage bool      `db:"is_system_message"`
     CreatedAt       time.Time `db:"created_at"`
     UpdatedAt       time.Time `db:"updated_at"`
     DeletedAt       *time.Time `db:"deleted_at"`
@@ -458,7 +456,7 @@ erDiagram
         int duration_min
         enum level
         int capacity
-        string fee_note
+        string fee
         string note
         enum status
         enum visibility
@@ -544,15 +542,13 @@ func (s *ApplicationService) postApprovalNotification(ctx context.Context, tx *s
        event.StartAt.Format("2006/01/02 15:04"), 
        event.LocationText, 
        event.RegionName,
-       event.FeeNote)
+       event.Fee)
     
     comment := EventComment{
         EventID:         event.ID,
         AuthorUserID:    event.CreatedBy, // 主催者からの投稿として
         Body:            gatheringDetails,
-        Scope:           "PUBLIC",
         IsPinned:        true, // 重要な情報なのでピン留め
-        IsSystemMessage: true, // システム生成メッセージ
     }
     
     return s.queries.CreateEventComment(ctx, tx, comment)
